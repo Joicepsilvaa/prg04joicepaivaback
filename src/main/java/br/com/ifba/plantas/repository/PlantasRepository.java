@@ -1,8 +1,10 @@
 package br.com.ifba.plantas.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public class PlantasRepository {
+import br.com.ifba.plantas.entity.Planta;
 
+@Repository
+public interface PlantasRepository extends JpaRepository<Planta, Long> {
 }

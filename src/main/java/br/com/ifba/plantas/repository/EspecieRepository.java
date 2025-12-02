@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 import br.com.ifba.plantas.entity.Especie;
 
 @Repository
-public class EspecieRepository extends JpaRepository{
-    
+public interface EspecieRepository extends JpaRepository<Especie, Long> {
 }

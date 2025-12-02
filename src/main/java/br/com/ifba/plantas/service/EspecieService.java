@@ -9,7 +9,7 @@ import br.com.ifba.plantas.repository.EspecieRepository;
 
 @Service
 public class EspecieService {
-    
+
     private final EspecieRepository repository;
 
     public EspecieService(EspecieRepository repository) {
@@ -20,19 +20,19 @@ public class EspecieService {
         return repository.findAll();
     }
 
+    public Especie findById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
     public Especie save(Especie especie) {
         return repository.save(especie);
     }
 
-    public Especie update(Especie especie) {
-        return repository.update(especie);
+    public void update(Especie especie) {
+        repository.save(especie);
     }
 
-    public boolean delete(Long id) {
-        return repository.delete(id);
-    }
-
-    public Especie findById(Long id) {
-        return repository.findById(id);
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }

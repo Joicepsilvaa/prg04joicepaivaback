@@ -1,8 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.com.ifba.plantas.controller;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifba.plantas.entity.Planta;
 import br.com.ifba.plantas.service.PlantasService;
-
-/**
- *
- * @author Joice
- */
 
 @RestController
 @RequestMapping("/plantas")
@@ -45,17 +38,19 @@ public class PlantasController {
 
     @PostMapping("/create")
     public ResponseEntity<Planta> create(@RequestBody Planta planta) {
-        return ResponseEntity.ok(service.save(planta));
+        Planta nova = service.save(planta);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nova);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Planta> update(@RequestBody Planta planta) {
-        return ResponseEntity.ok(service.update(planta));
+    public ResponseEntity<Void> update(@RequestBody Planta planta) {
+        service.update(planta);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
