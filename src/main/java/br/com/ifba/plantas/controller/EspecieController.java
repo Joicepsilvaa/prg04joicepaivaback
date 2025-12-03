@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ifba.infrastructure.mapper.ObjectMapperUtil;
+import br.com.ifba.plantas.dto.especie.EspecieGetResponseDTO;
+import br.com.ifba.plantas.dto.especie.EspeciePostRequestDTO;
 import br.com.ifba.plantas.entity.Especie;
 import br.com.ifba.plantas.service.EspecieService;
 
@@ -21,30 +24,39 @@ import br.com.ifba.plantas.service.EspecieService;
 public class EspecieController {
 
     private final EspecieService service;
+    private final ObjectMapperUtil mapper;
 
-    public EspecieController(EspecieService service) {
+    public EspecieController(EspecieService service, ObjectMapperUtil mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping("/findall")
-    public ResponseEntity<List<Especie>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<List<EspecieGetResponseDTO>> findAll() {
+        List<Especie> especies = service.findAll();
+        List<EspecieGetResponseDTO> response = mapper.mapAll(especies, EspecieGetResponseDTO.class);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Especie> findById(@PathVariable Long id) {
+    public ResponseEntity<EspecieGetResponseDTO> findById(@PathVariable Long id) {
         Especie especie = service.findById(id);
-        return ResponseEntity.ok(especie);
+        EspecieGetResponseDTO dto = mapper.map(especie, EspecieGetResponseDTO.class);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Especie> create(@RequestBody Especie especie) {
+    public ResponseEntity<EspecieGetResponseDTO> create(@RequestBody EspeciePostRequestDTO dto) {
+        Especie especie = mapper.map(dto, Especie.class);
         Especie nova = service.save(especie);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nova);
+        EspecieGetResponseDTO response = mapper.map(nova, EspecieGetResponseDTO.class);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@RequestBody Especie especie) {
+    public ResponseEntity<Void> update(@RequestBody EspeciePostRequestDTO dto) {
+        Especie especie = mapper.map(dto, Especie.class);
         service.update(especie);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
