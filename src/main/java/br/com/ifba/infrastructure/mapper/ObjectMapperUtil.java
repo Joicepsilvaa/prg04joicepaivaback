@@ -3,6 +3,7 @@ package br.com.ifba.infrastructure.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -3,6 +3,7 @@ package br.com.ifba.plantas.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ifba.infrastructure.exception.BusinessException;
 import br.com.ifba.plantas.entity.Especie;
@@ -17,7 +18,6 @@ public class EspecieService {
         this.repository = repository;
     }
 
-    // Listar todos
     public List<Especie> findAll() {
         List<Especie> especies = repository.findAll();
 
@@ -28,27 +28,17 @@ public class EspecieService {
         return especies;
     }
 
-    // Buscar por id
     public Especie findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new BusinessException("Espécie não encontrada com o ID: " + id));
     }
 
-    // Salvar
+    @Transactional
     public Especie save(Especie especie) {
-
-        if (especie.getNomeCientifico() == null || especie.getNomeCientifico().isBlank()) {
-            throw new BusinessException("O nome científico é obrigatório!");
-        }
-
-        if (especie.getNomePopular() == null || especie.getNomePopular().isBlank()) {
-            throw new BusinessException("O nome popular é obrigatório!");
-        }
-
         return repository.save(especie);
     }
 
-    // Atualizar
+    @Transactional
     public void update(Especie especie) {
         if (especie.getId() == null) {
             throw new BusinessException("ID da espécie é obrigatório para atualização!");
@@ -61,7 +51,7 @@ public class EspecieService {
         repository.save(especie);
     }
 
-    // Deletar
+    @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new BusinessException("Não é possível deletar: espécie não encontrada!");

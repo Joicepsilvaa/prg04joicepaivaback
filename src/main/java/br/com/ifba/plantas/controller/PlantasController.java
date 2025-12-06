@@ -18,6 +18,7 @@ import br.com.ifba.plantas.dto.planta.PlantaGetResponseDTO;
 import br.com.ifba.plantas.dto.planta.PlantaPostRequestDTO;
 import br.com.ifba.plantas.entity.Planta;
 import br.com.ifba.plantas.service.PlantasService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/plantas")
@@ -34,7 +35,8 @@ public class PlantasController {
     @GetMapping("/findall")
     public ResponseEntity<List<PlantaGetResponseDTO>> findAll() {
         List<Planta> plantas = service.findAll();
-        List<PlantaGetResponseDTO> response = mapper.mapAll(plantas, PlantaGetResponseDTO.class);
+        List<PlantaGetResponseDTO> response =
+                mapper.mapAll(plantas, PlantaGetResponseDTO.class);
 
         return ResponseEntity.ok(response);
     }
@@ -42,24 +44,31 @@ public class PlantasController {
     @GetMapping("/{id}")
     public ResponseEntity<PlantaGetResponseDTO> findById(@PathVariable Long id) {
         Planta planta = service.findById(id);
-        PlantaGetResponseDTO dto = mapper.map(planta, PlantaGetResponseDTO.class);
+        PlantaGetResponseDTO dto =
+                mapper.map(planta, PlantaGetResponseDTO.class);
 
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<PlantaGetResponseDTO> create(@RequestBody PlantaPostRequestDTO dto) {
+    public ResponseEntity<PlantaGetResponseDTO> create(
+            @RequestBody @Valid PlantaPostRequestDTO dto) {
+
         Planta planta = mapper.map(dto, Planta.class);
         Planta nova = service.save(planta);
-        PlantaGetResponseDTO response = mapper.map(nova, PlantaGetResponseDTO.class);
+        PlantaGetResponseDTO response =
+                mapper.map(nova, PlantaGetResponseDTO.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@RequestBody PlantaPostRequestDTO dto) {
+    public ResponseEntity<Void> update(
+            @RequestBody @Valid PlantaPostRequestDTO dto) {
+
         Planta planta = mapper.map(dto, Planta.class);
         service.update(planta);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

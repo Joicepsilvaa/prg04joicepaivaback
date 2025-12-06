@@ -18,6 +18,7 @@ import br.com.ifba.plantas.dto.especie.EspecieGetResponseDTO;
 import br.com.ifba.plantas.dto.especie.EspeciePostRequestDTO;
 import br.com.ifba.plantas.entity.Especie;
 import br.com.ifba.plantas.service.EspecieService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/especies")
@@ -34,30 +35,40 @@ public class EspecieController {
     @GetMapping("/findall")
     public ResponseEntity<List<EspecieGetResponseDTO>> findAll() {
         List<Especie> especies = service.findAll();
-        List<EspecieGetResponseDTO> response = mapper.mapAll(especies, EspecieGetResponseDTO.class);
+        List<EspecieGetResponseDTO> response =
+                mapper.mapAll(especies, EspecieGetResponseDTO.class);
+
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EspecieGetResponseDTO> findById(@PathVariable Long id) {
         Especie especie = service.findById(id);
-        EspecieGetResponseDTO dto = mapper.map(especie, EspecieGetResponseDTO.class);
+        EspecieGetResponseDTO dto =
+                mapper.map(especie, EspecieGetResponseDTO.class);
+
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<EspecieGetResponseDTO> create(@RequestBody EspeciePostRequestDTO dto) {
+    public ResponseEntity<EspecieGetResponseDTO> create(
+            @RequestBody @Valid EspeciePostRequestDTO dto) {
+
         Especie especie = mapper.map(dto, Especie.class);
         Especie nova = service.save(especie);
-        EspecieGetResponseDTO response = mapper.map(nova, EspecieGetResponseDTO.class);
+        EspecieGetResponseDTO response =
+                mapper.map(nova, EspecieGetResponseDTO.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Void> update(@RequestBody EspeciePostRequestDTO dto) {
+    public ResponseEntity<Void> update(
+            @RequestBody @Valid EspeciePostRequestDTO dto) {
+
         Especie especie = mapper.map(dto, Especie.class);
         service.update(especie);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
