@@ -2,6 +2,9 @@ package br.com.ifba.plantas.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +21,8 @@ public class PlantasService {
         this.repository = repository;
     }
 
-    public List<Planta> findAll() {
-        List<Planta> plantas = repository.findAll();
+    public Page<Planta> findAll(Pageable pageable) {
+        Page<Planta> plantas = repository.findAll(pageable);
 
         if (plantas.isEmpty()) {
             throw new BusinessException("Nenhuma planta cadastrada no sistema!");

@@ -2,6 +2,10 @@ package br.com.ifba.plantas.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,10 +37,14 @@ public class PlantasController {
     }
 
     @GetMapping("/findall")
-    public ResponseEntity<List<PlantaGetResponseDTO>> findAll() {
-        List<Planta> plantas = service.findAll();
-        List<PlantaGetResponseDTO> response =
-                mapper.mapAll(plantas, PlantaGetResponseDTO.class);
+    public ResponseEntity<Page<PlantaGetResponseDTO>> findAll(
+            @PageableDefault(page = 0, size = 5) Pageable pageable) {
+
+        Page<Planta> plantas = service.findAll(pageable);
+
+        Page<PlantaGetResponseDTO> response =
+                plantas.map(planta ->
+                        mapper.map(planta, PlantaGetResponseDTO.class));
 
         return ResponseEntity.ok(response);
     }

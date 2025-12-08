@@ -2,6 +2,8 @@ package br.com.ifba.plantas.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +20,8 @@ public class EspecieService {
         this.repository = repository;
     }
 
-    public List<Especie> findAll() {
-        List<Especie> especies = repository.findAll();
+    public Page<Especie> findAll(Pageable pageable) {
+        Page<Especie> especies = repository.findAll(pageable);
 
         if (especies.isEmpty()) {
             throw new BusinessException("Nenhuma espécie cadastrada no sistema!");
