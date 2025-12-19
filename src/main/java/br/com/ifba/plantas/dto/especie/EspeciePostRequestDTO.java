@@ -12,9 +12,6 @@ public class EspeciePostRequestDTO {
     @NotBlank(message = "O nome popular é obrigatório")
     private String nomePopular;
 
-    @NotBlank(message = "O tipo é obrigatório")
-    private String tipo;
-
     @NotBlank(message = "A luz é obrigatória")
     private String luz;
 

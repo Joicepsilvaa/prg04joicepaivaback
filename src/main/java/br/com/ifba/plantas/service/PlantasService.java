@@ -2,9 +2,6 @@ package br.com.ifba.plantas.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +18,11 @@ public class PlantasService {
         this.repository = repository;
     }
 
-    public Page<Planta> findAll(Pageable pageable) {
-        Page<Planta> plantas = repository.findAll(pageable);
+    public List<Planta> findAll() {
+        List<Planta> plantas = repository.findAll();
 
         if (plantas.isEmpty()) {
-            throw new BusinessException("Nenhuma planta cadastrada no sistema!");
+            throw new BusinessException("Nenhuma planta cadastrada!");
         }
 
         return plantas;
@@ -33,31 +30,34 @@ public class PlantasService {
 
     public Planta findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new BusinessException("Planta não encontrada com o ID: " + id));
+                .orElseThrow(() -> new BusinessException("Planta não encontrada!"));
     }
 
     @Transactional
     public Planta save(Planta planta) {
+        if (planta.getEspecie() == null) {
+            throw new BusinessException("Espécie é obrigatória!");
+        }
+
         return repository.save(planta);
     }
 
-    @Transactional
-    public void update(Planta planta) {
-        if (planta.getId() == null) {
-            throw new BusinessException("O ID da planta é obrigatório para atualização!");
-        }
-
-        if (!repository.existsById(planta.getId())) {
-            throw new BusinessException("Não é possível atualizar: planta não encontrada!");
-        }
-
-        repository.save(planta);
+@Transactional
+public void update(Planta planta) {
+    if (planta.getId() == null) {
+        throw new BusinessException("ID da planta é obrigatório!");
     }
 
+    if (!repository.existsById(planta.getId())) {
+        throw new BusinessException("Planta não encontrada!");
+    }
+
+    repository.save(planta); // Só isso, igual ao Especie
+}
     @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new BusinessException("Não é possível deletar: planta não encontrada!");
+            throw new BusinessException("Planta não encontrada!");
         }
 
         repository.deleteById(id);

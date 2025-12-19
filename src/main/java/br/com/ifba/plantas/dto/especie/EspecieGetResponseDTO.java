@@ -4,9 +4,10 @@ import lombok.Data;
 
 @Data
 public class EspecieGetResponseDTO {
+
+    private Long id;
     private String nomeCientifico;
     private String nomePopular;
-    private String tipo;
     private String luz;
     private String frequenciaRega;
 }

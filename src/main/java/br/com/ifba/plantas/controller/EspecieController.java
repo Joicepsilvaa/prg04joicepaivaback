@@ -1,8 +1,6 @@
 package br.com.ifba.plantas.controller;
 
 import java.util.List;
-
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,10 +19,6 @@ import br.com.ifba.plantas.entity.Especie;
 import br.com.ifba.plantas.service.EspecieService;
 import jakarta.validation.Valid;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-
 @RestController
 @RequestMapping("/especies")
 public class EspecieController {
@@ -37,53 +31,62 @@ public class EspecieController {
         this.mapper = mapper;
     }
 
-    @GetMapping("/findall")
-    public ResponseEntity<Page<EspecieGetResponseDTO>> findAll(
-            @PageableDefault(page = 0, size = 5) Pageable pageable) {
+    // Pega todas as espécies (sem paginação, porque o front não suporta ainda)
+    @GetMapping
+    public ResponseEntity<List<EspecieGetResponseDTO>> findAll() {
 
-        Page<Especie> especies = service.findAll(pageable);
+        List<Especie> especies = service.findAll();
 
-        Page<EspecieGetResponseDTO> response =
-                especies.map(especie ->
-                        mapper.map(especie, EspecieGetResponseDTO.class));
+        // Converte cada espécie para o formato de resposta que o front espera
+        List<EspecieGetResponseDTO> response = especies.stream()
+                .map(e -> mapper.map(e, EspecieGetResponseDTO.class))
+                .toList();
 
         return ResponseEntity.ok(response);
     }
 
+    // Busca uma espécie específica pelo ID
     @GetMapping("/{id}")
     public ResponseEntity<EspecieGetResponseDTO> findById(@PathVariable Long id) {
         Especie especie = service.findById(id);
-        EspecieGetResponseDTO dto =
-                mapper.map(especie, EspecieGetResponseDTO.class);
-
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(mapper.map(especie, EspecieGetResponseDTO.class));
     }
 
-    @PostMapping("/create")
+    // Cria uma nova espécie
+    @PostMapping
     public ResponseEntity<EspecieGetResponseDTO> create(
             @RequestBody @Valid EspeciePostRequestDTO dto) {
 
+        // Converte os dados recebidos para a entidade do banco
         Especie especie = mapper.map(dto, Especie.class);
-        Especie nova = service.save(especie);
-        EspecieGetResponseDTO response =
-                mapper.map(nova, EspecieGetResponseDTO.class);
+        Especie salva = service.save(especie);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        // Retorna a espécie criada, convertida para o formato de resposta
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(mapper.map(salva, EspecieGetResponseDTO.class));
     }
 
-    @PutMapping("/update")
+    // Atualiza uma espécie existente
+    @PutMapping("/{id}")
     public ResponseEntity<Void> update(
+            @PathVariable Long id,
             @RequestBody @Valid EspeciePostRequestDTO dto) {
 
         Especie especie = mapper.map(dto, Especie.class);
-        service.update(especie);
+        // Garante que estamos atualizando a espécie correta
+        especie.setId(id);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        service.update(especie);
+        // 204 No Content - deu certo mas não precisa retornar nada
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/delete/{id}")
+    // Remove uma espécie
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        // 204 No Content - removeu com sucesso
+        return ResponseEntity.noContent().build();
     }
 }

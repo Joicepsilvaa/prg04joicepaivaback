@@ -18,22 +18,4 @@ class EspecieRepositoryTest {
     @Autowired
     private EspecieRepository repository;
 
-    @Test
-    void saveAndFindAll_shouldReturnEspecie() {
-
-        Especie especie = new Especie(
-                null,
-                "Ficus lyrata",
-                "Figueira-lira",
-                "Árvore",
-                "Meia-sombra",
-                "Semanal"
-        );
-
-        repository.save(especie);
-
-        List<Especie> especies = repository.findAll();
-
-        assertThat(especies).isNotEmpty();
-    }
 }

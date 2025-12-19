@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,22 +17,15 @@ public class Planta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nomeUsuario;
+
+    private String nomePlanta;
     private String local;
-    private String dataAquisicao;
     private String observacoes;
-    private Long especieId;
 
-    public Planta() {}
+    @ManyToOne
+    @JoinColumn(name = "especie_id", nullable = false)
+    private Especie especie;
 
-    public Planta(Long id, String nomeUsuario, String local, String dataAquisicao,
-                  String observacoes, Long especieId) {
-        this.id = id;
-        this.nomeUsuario = nomeUsuario;
-        this.local = local;
-        this.dataAquisicao = dataAquisicao;
-        this.observacoes = observacoes;
-        this.especieId = especieId;
+    public Planta() {
     }
-
 }

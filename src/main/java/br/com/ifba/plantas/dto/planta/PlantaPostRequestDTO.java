@@ -7,15 +7,12 @@ import lombok.Data;
 @Data
 public class PlantaPostRequestDTO {
 
-    @NotBlank(message = "O nome do usuário é obrigatório")
-    private String nomeUsuario;
+    @NotBlank(message = "O nome da planta é obrigatório")  
+    private String nomePlanta; 
 
     @NotBlank(message = "O local é obrigatório")
     private String local;
-
-    @NotBlank(message = "A data de aquisição é obrigatória")
-    private String dataAquisicao;
-
+    
     private String observacoes;
 
     @NotNull(message = "O ID da espécie é obrigatório")

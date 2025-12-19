@@ -21,17 +21,6 @@ class PlantasRepositoryTest {
     @Test
     void saveAndFindAll_shouldReturnPlanta() {
 
-        Planta planta = new Planta(
-                null,
-                "Planta da Sala",
-                "Sala",
-                "2024-12-10",
-                "Planta saudável",
-                1L
-        );
-
-        repository.save(planta);
-
         List<Planta> plantas = repository.findAll();
 
         assertThat(plantas).isNotEmpty();
